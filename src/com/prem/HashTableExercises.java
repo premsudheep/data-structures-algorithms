@@ -7,6 +7,30 @@ import java.util.Set;
 
 public class HashTableExercises {
 
+    public char getFirstNonRepeatedChar(String s) {
+        java.util.Map<Character, Integer> map = new java.util.HashMap<>();
+        for (char ch : s.toCharArray()) {
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+        }
+
+        for (char ch : map.keySet()) {
+            if (map.get(ch) == 1)
+                return ch;
+        }
+        return Character.MIN_VALUE;
+    }
+
+    public char getFirstRepeatedChar(String s) {
+        Set<Character> set = new HashSet<>();
+        for (char ch : s.toCharArray()) {
+            if (set.contains(ch))
+                return ch;
+            else
+                set.add(ch);
+        }
+        return Character.MIN_VALUE;
+    }
+
     // O(n)
     public int[] twoSum(int[] numbers, int target) {
         // This problem is a variation of the previous problem

@@ -2,7 +2,9 @@ package com.prem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.TreeSet;
+import java.util.LinkedList;
 
 public class Tree {
   private class Node {
@@ -49,31 +51,32 @@ public class Tree {
   }
 
   public void insertBST(int data) {
-    //Create a new node
+    // Create a new node
     Node newNode = new Node(data);
-    //Check whether tree is empty
-    if(root == null) {
+    // Check whether tree is empty
+    if (root == null) {
       root = newNode;
       return;
-    }
-    else {
-      //current node point to root of the tree
+    } else {
+      // current node point to root of the tree
       Node current = root, parent = null;
-      while(true) {
-        //parent keep track of the parent node of current node.
+      while (true) {
+        // parent keep track of the parent node of current node.
         parent = current;
-        //If data is less than current's data, node will be inserted to the left of tree
-        if(data < current.value) {
+        // If data is less than current's data, node will be inserted to the left of
+        // tree
+        if (data < current.value) {
           current = current.leftChild;
-          if(current == null) {
+          if (current == null) {
             parent.leftChild = newNode;
             return;
           }
         }
-        //If data is greater than current's data, node will be inserted to the right of tree
+        // If data is greater than current's data, node will be inserted to the right of
+        // tree
         else {
           current = current.rightChild;
-          if(current == null) {
+          if (current == null) {
             parent.rightChild = newNode;
             return;
           }
@@ -145,9 +148,7 @@ public class Tree {
     if (isLeaf(root))
       return 0;
 
-    return 1 + Math.max(
-            height(root.leftChild),
-            height(root.rightChild));
+    return 1 + Math.max(height(root.leftChild), height(root.rightChild));
   }
 
   private boolean isLeaf(Node node) {
@@ -191,9 +192,8 @@ public class Tree {
       return true;
 
     if (first != null && second != null)
-      return first.value == second.value
-              && equals(first.leftChild, second.leftChild)
-              && equals(first.rightChild, second.rightChild);
+      return first.value == second.value && equals(first.leftChild, second.leftChild)
+          && equals(first.rightChild, second.rightChild);
 
     return false;
   }
@@ -209,9 +209,8 @@ public class Tree {
     if (root.value < min || root.value > max)
       return false;
 
-    return
-            isBinarySearchTree(root.leftChild, min, root.value - 1)
-                    && isBinarySearchTree(root.rightChild, root.value + 1, max);
+    return isBinarySearchTree(root.leftChild, min, root.value - 1)
+        && isBinarySearchTree(root.rightChild, root.value + 1, max);
   }
 
   public ArrayList<Integer> getNodesAtDistance(int distance) {
@@ -240,6 +239,29 @@ public class Tree {
     }
   }
 
+  public List<List<Integer>> leveOrderTraversal() {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null)
+      return result;
+
+    Queue<Node> queue = new LinkedList<>();
+    queue.add(root);
+
+    while (!queue.isEmpty()) {
+      int size = queue.size();
+      List<Integer> currentLevel = new ArrayList<>();
+      for (int i = 0; i < size; i++) {
+        Node currentNode = queue.remove();
+        currentLevel.add(currentNode.value);
+        if (currentNode.leftChild != null)
+          queue.add(currentNode.leftChild);
+        if (currentNode.rightChild != null)
+          queue.add(currentNode.rightChild);
+      }
+      result.add(currentLevel);
+    }
+    return result;
+  }
 
   public int size() {
     return size(root);
@@ -307,13 +329,11 @@ public class Tree {
 
     var areSibling = false;
     if (root.leftChild != null && root.rightChild != null) {
-      areSibling = (root.leftChild.value == first && root.rightChild.value == second) ||
-                   (root.rightChild.value == first && root.leftChild.value == second);
+      areSibling = (root.leftChild.value == first && root.rightChild.value == second)
+          || (root.rightChild.value == first && root.leftChild.value == second);
     }
 
-    return areSibling ||
-            areSibling(root.leftChild, first, second) ||
-            areSibling(root.rightChild, first, second);
+    return areSibling || areSibling(root.leftChild, first, second) || areSibling(root.rightChild, first, second);
   }
 
   public List<Integer> getAncestors(int value) {
@@ -335,8 +355,7 @@ public class Tree {
 
     // If we find the target value in the left or right sub-trees, that means
     // the current node (root) is one of the ancestors. So we add it to the list.
-    if (getAncestors(root.leftChild, value, list) ||
-        getAncestors(root.rightChild, value, list)) {
+    if (getAncestors(root.leftChild, value, list) || getAncestors(root.rightChild, value, list)) {
       list.add(root.value);
       return true;
     }
@@ -354,9 +373,7 @@ public class Tree {
 
     var balanceFactor = height(root.leftChild) - height(root.rightChild);
 
-    return Math.abs(balanceFactor) <= 1 &&
-            isBalanced(root.leftChild) &&
-            isBalanced(root.rightChild);
+    return Math.abs(balanceFactor) <= 1 && isBalanced(root.leftChild) && isBalanced(root.rightChild);
   }
 
   public boolean isPerfect() {
@@ -364,19 +381,24 @@ public class Tree {
   }
 
   public int getMinimumDifferenceBwAnyNodeBST(Node root) {
-    // The most common idea is to first inOrder traverse the tree and compare the delta between each of the adjacent values. It's guaranteed to have the correct answer because it is a BST thus inOrder traversal values are sorted.
-    //Solution 1 - In-Order traverse, time complexity O(N), space complexity O(1).
+    // The most common idea is to first inOrder traverse the tree and compare the
+    // delta between each of the adjacent values. It's guaranteed to have the
+    // correct answer because it is a BST thus inOrder traversal values are sorted.
+    // Solution 1 - In-Order traverse, time complexity O(N), space complexity O(1).
     return getMinDiffBST(root, Integer.MAX_VALUE, null);
 
-    //return getMinDiffNonBST(root, Integer.MAX_VALUE, new TreeSet<>());
+    // return getMinDiffNonBST(root, Integer.MAX_VALUE, new TreeSet<>());
   }
 
   private int getMinDiffBST(Node currentNode, int min, Node prevNode) {
-    // The most common idea is to first inOrder traverse the tree and compare the delta between each of the adjacent values. It's guaranteed to have the correct answer because it is a BST thus inOrder traversal values are sorted.
-    //Solution 1 - In-Order traverse, time complexity O(N), space complexity O(1).
-    if(root == null) return min;
+    // The most common idea is to first inOrder traverse the tree and compare the
+    // delta between each of the adjacent values. It's guaranteed to have the
+    // correct answer because it is a BST thus inOrder traversal values are sorted.
+    // Solution 1 - In-Order traverse, time complexity O(N), space complexity O(1).
+    if (root == null)
+      return min;
     getMinDiffBST(currentNode.leftChild, min, prevNode);
-    if(prevNode != null)
+    if (prevNode != null)
       min = Math.min(min, currentNode.value - prevNode.value);
     prevNode = currentNode;
     getMinDiffBST(currentNode.rightChild, min, prevNode);
@@ -384,13 +406,17 @@ public class Tree {
   }
 
   private int getMinDiffNonBST(Node currentNode, int min, TreeSet<Integer> set) {
-    //What if it is not a BST? (Follow up of the problem) The idea is to put values in a TreeSet and then every time we can use O(lgN) time to lookup for the nearest values.
-    //Solution 2 - Pre-Order traverse, time complexity O(NlgN), space complexity O(N).
-    if(currentNode == null) return min;
-    if(!set.isEmpty()) {
-      if(set.floor(currentNode.value) != null)
+    // What if it is not a BST? (Follow up of the problem) The idea is to put values
+    // in a TreeSet and then every time we can use O(lgN) time to lookup for the
+    // nearest values.
+    // Solution 2 - Pre-Order traverse, time complexity O(NlgN), space complexity
+    // O(N).
+    if (currentNode == null)
+      return min;
+    if (!set.isEmpty()) {
+      if (set.floor(currentNode.value) != null)
         min = Math.min(min, currentNode.value - set.floor(currentNode.value));
-      if(set.ceiling(currentNode.value) != null)
+      if (set.ceiling(currentNode.value) != null)
         min = Math.min(min, currentNode.value - set.ceiling(currentNode.value));
       set.add(currentNode.value);
     }

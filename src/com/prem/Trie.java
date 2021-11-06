@@ -212,7 +212,6 @@ public class Trie {
   // prefix should be equal to the length of the
   // shortest word.
 
-
   public static String longestCommonPrefix(String[] words) {
     if (words == null)
       return "";

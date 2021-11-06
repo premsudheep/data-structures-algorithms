@@ -82,6 +82,42 @@ public class WeightedGraph {
     }
   }
 
+  public int getShortestDistance(String from, String to) {
+
+    Node fromNode = nodes.get(from);
+
+    PriorityQueue<NodeEntry> queue = new PriorityQueue<>(Comparator.comparingInt(ne -> ne.priority));
+
+    Map<Node, Integer> distances = new HashMap<>();
+    for (Node node : nodes.values())
+      distances.put(node, Integer.MAX_VALUE);
+    distances.replace(fromNode, 0);
+
+    Set<Node> visited = new HashSet<>();
+
+    queue.add(new NodeEntry(fromNode, 0));
+
+    while (!queue.isEmpty()) {
+      Node current = queue.remove().node;
+      visited.add(current);
+
+      for (Edge edge : current.getEdges()) {
+        Node neighNode = edge.to;
+        int neighWeight = edge.weight;
+        if (visited.contains(neighNode))
+          continue;
+
+        int newDistance = distances.get(current) + neighWeight;
+        if (newDistance < distances.get(neighNode)) {
+          distances.replace(neighNode, newDistance);
+          queue.add(new NodeEntry(neighNode, newDistance));
+        }
+      }
+    }
+
+    return distances.get(nodes.get(to));
+  }
+
   public Path getShortestPath(String from, String to) {
     var fromNode = nodes.get(from);
     if (fromNode == null)
@@ -100,9 +136,7 @@ public class WeightedGraph {
 
     Set<Node> visited = new HashSet<>();
 
-    PriorityQueue<NodeEntry> queue = new PriorityQueue<>(
-        Comparator.comparingInt(ne -> ne.priority)
-    );
+    PriorityQueue<NodeEntry> queue = new PriorityQueue<>(Comparator.comparingInt(ne -> ne.priority));
     queue.add(new NodeEntry(fromNode, 0));
 
     while (!queue.isEmpty()) {
@@ -125,8 +159,7 @@ public class WeightedGraph {
     return buildPath(previousNodes, toNode);
   }
 
-  private Path buildPath(
-          Map<Node, Node> previousNodes, Node toNode) {
+  private Path buildPath(Map<Node, Node> previousNodes, Node toNode) {
 
     Stack<Node> stack = new Stack<>();
     stack.push(toNode);
@@ -147,24 +180,21 @@ public class WeightedGraph {
     Set<Node> visited = new HashSet<>();
 
     for (var node : nodes.values()) {
-      if (!visited.contains(node) &&
-          hasCycle(node, null, visited))
+      if (!visited.contains(node) && hasCycle(node, null, visited))
         return true;
     }
 
     return false;
   }
 
-  private boolean hasCycle(Node node, Node parent,
-                           Set<Node> visited) {
+  private boolean hasCycle(Node node, Node parent, Set<Node> visited) {
     visited.add(node);
 
     for (var edge : node.getEdges()) {
       if (edge.to == parent)
         continue;
 
-      if (visited.contains(edge.to) ||
-          hasCycle(edge.to, node, visited))
+      if (visited.contains(edge.to) || hasCycle(edge.to, node, visited))
         return true;
     }
 
@@ -177,9 +207,7 @@ public class WeightedGraph {
     if (nodes.isEmpty())
       return tree;
 
-    PriorityQueue<Edge> edges = new PriorityQueue<>(
-        Comparator.comparingInt(e -> e.weight)
-    );
+    PriorityQueue<Edge> edges = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
 
     var startNode = nodes.values().iterator().next();
     edges.addAll(startNode.getEdges());
@@ -196,8 +224,7 @@ public class WeightedGraph {
         continue;
 
       tree.addNode(nextNode.label);
-      tree.addEdge(minEdge.from.label,
-              nextNode.label, minEdge.weight);
+      tree.addEdge(minEdge.from.label, nextNode.label, minEdge.weight);
 
       for (var edge : nextNode.getEdges())
         if (!tree.containsNode(edge.to.label))
@@ -210,18 +237,5 @@ public class WeightedGraph {
   public boolean containsNode(String label) {
     return nodes.containsKey(label);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

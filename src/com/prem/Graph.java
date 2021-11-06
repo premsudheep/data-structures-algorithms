@@ -150,8 +150,7 @@ public class Graph {
     return sorted;
   }
 
-  private void topologicalSort(
-      Node node, Set<Node> visited, Stack<Node> stack) {
+  private void topologicalSort(Node node, Set<Node> visited, Stack<Node> stack) {
     if (visited.contains(node))
       return;
 
@@ -179,8 +178,7 @@ public class Graph {
     return false;
   }
 
-  private boolean hasCycle(Node node, Set<Node> all,
-                 Set<Node> visiting, Set<Node> visited) {
+  private boolean hasCycle(Node node, Set<Node> all, Set<Node> visiting, Set<Node> visited) {
     all.remove(node);
     visiting.add(node);
 
@@ -201,19 +199,8 @@ public class Graph {
     return false;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  // Kahn's Algorithm -> (detect cycles and remove those nodes that are in cycle
+  // and implement topological sort on the rest of the nodes)
+  // https://www.youtube.com/watch?v=cIBFEhD77b4
 
 }

@@ -11,13 +11,11 @@ public class MaxHeap {
     var largerIndex = index;
 
     var leftIndex = index * 2 + 1;
-    if (leftIndex < array.length &&
-        array[leftIndex] > array[largerIndex])
+    if (leftIndex < array.length && array[leftIndex] > array[largerIndex])
       largerIndex = leftIndex;
 
     var rightIndex = index * 2 + 2;
-    if (rightIndex < array.length &&
-      array[rightIndex] > array[largerIndex])
+    if (rightIndex < array.length && array[rightIndex] > array[largerIndex])
       largerIndex = rightIndex;
 
     if (index == largerIndex)

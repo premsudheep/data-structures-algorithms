@@ -13,6 +13,14 @@ public class Heap {
     bubbleUp();
   }
 
+  private void bubbleUp() {
+    var index = size - 1;
+    while (index > 0 && items[index] > items[parent(index)]) {
+      swap(index, parent(index));
+      index = parent(index);
+    }
+  }
+
   public int remove() {
     if (isEmpty())
       throw new IllegalStateException();
@@ -45,9 +53,7 @@ public class Heap {
     if (!hasRightChild(index))
       return leftChildIndex(index);
 
-    return (leftChild(index) > rightChild(index)) ?
-            leftChildIndex(index) :
-            rightChildIndex(index);
+    return (leftChild(index) > rightChild(index)) ? leftChildIndex(index) : rightChildIndex(index);
   }
 
   private boolean hasLeftChild(int index) {
@@ -90,14 +96,6 @@ public class Heap {
     return size == items.length;
   }
 
-  private void bubbleUp() {
-    var index = size - 1;
-    while (index > 0 && items[index] > items[parent(index)]) {
-      swap(index, parent(index));
-      index = parent(index);
-    }
-  }
-
   private int parent(int index) {
     return (index - 1) / 2;
   }
@@ -128,12 +126,8 @@ public class Heap {
     var leftChildIndex = index * 2 + 1;
     var rightChildIndex = index * 2 + 2;
 
-    var isValidParent =
-        array[index] >= array[leftChildIndex] &&
-        array[index] >= array[rightChildIndex];
+    var isValidParent = array[index] >= array[leftChildIndex] && array[index] >= array[rightChildIndex];
 
-    return isValidParent &&
-            isMaxHeap(array, leftChildIndex) &&
-            isMaxHeap(array, rightChildIndex);
+    return isValidParent && isMaxHeap(array, leftChildIndex) && isMaxHeap(array, rightChildIndex);
   }
 }
