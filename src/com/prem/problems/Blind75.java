@@ -645,6 +645,243 @@ public class Blind75 {
         return dp[rows][columns];
     }
 
+    // 139. Word Break
+    
+    // https://www.youtube.com/watch?v=LgoAfakGz5E&t=166s
+    // https://www.youtube.com/watch?v=WepWFGxiwRs
+
+
+    // Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+    // Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+    // Example 1:
+
+    // Input: s = "leetcode", wordDict = ["leet","code"]
+    // Output: true
+    // Explanation: Return true because "leetcode" can be segmented as "leet code".
+    // Example 2:
+
+    // Input: s = "applepenapple", wordDict = ["apple","pen"]
+    // Output: true
+    // Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+    // Note that you are allowed to reuse a dictionary word.
+    // Example 3:
+
+    // Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+    // Output: false
+
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> dict = new HashSet<>(wordDict);
+        int n = s.length();
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+
+        for(int i = 1; i <= n; i++) {
+            for(int j = 0; j < i; j++) {
+                if(dp[j] && dict.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[n];
+    }
+
+    // Backtracking
+
+    // 39. Combination Sum
+
+    // Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order.
+
+    // The same number may be chosen from candidates an unlimited number of times.
+
+    // Input: candidates = [2,3,6,7], target = 7
+    // Output: [[2,2,3],[7]]
+    // Explanation:
+    // 2 and 3 are candidates, and 2 + 2 + 3 = 7. Note that 2 can be used multiple times.
+    // 7 is a candidate, and 7 = 7.
+    // These are the only two combinations.
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> l = new ArrayList<>();
+        List<Integer> l1 = new ArrayList<>();
+        combinationSumDFS(0, candidates, target, l, l1);
+        return l;
+    }
+
+    public void combinationSumDFS(int ind, int[] arr, int target, List<List<Integer>> l, List<Integer> l1) {
+        if(target == 0) {
+            l.add(new ArrayList<>(l1));
+            return;
+        }
+        if(ind == arr.length){
+            return;
+        }
+        if(arr[ind] <= target) {
+            l1.add(arr[ind]);
+            combinationSumDFS(ind, arr, target - arr[ind], l, l1);
+            l1.remove(l1.size() - 1);
+        }
+        combinationSumDFS(ind + 1, arr, target, l, l1);
+    }
+
+    // 198. House Robber
+
+    // Dynamic programmming, Sliding window, Two pointer.
+
+    // You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+    // Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+
+    // Example 1:
+
+    // Input: nums = [1,2,3,1]
+    // Output: 4
+    // Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+    // Total amount you can rob = 1 + 3 = 4.
+
+    public int rob(int[] nums) {
+        int rob1 = 0;
+        int rob2 = 0;
+        // [rob1, rob2, n, n+1, n+2,.....]
+        for(int n: nums) {
+            int temp = Math.max(rob1 + n, rob2);
+            rob1 = rob2;
+            rob2 = temp;
+        }
+        return rob2;
+    }
+
+    // 213. House Robber II
+
+    // You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+    // Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+
+    // Example 1:
+
+    // Input: nums = [2,3,2]
+    // Output: 3
+    // Explanation: You cannot rob house 1 (money = 2) and then rob house 3 (money = 2), because they are adjacent houses.
+    // Example 2:
+
+    // Input: nums = [1,2,3,1]
+    // Output: 4
+    // Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+    // Total amount you can rob = 1 + 3 = 4.
+
+    public int rob2(int[] nums) {
+        int n = nums.length;
+        // Array from index 0 to n-2 (inclusive)
+        int[] array1 = new int[n -1];
+        System.arraycopy(nums, 0, array1, 0, n-1);
+        // Array from index 1 to n-1 (inclusive)
+        int[] array2 = new int[n -1];
+        System.arraycopy(nums, 1, array2, 0, n-1);
+
+        int result = Math.max(nums[0], Math.max(rob(array1), rob(array2)));
+        return result;
+    }
+
+    // 91. Decode Ways
+
+    // A message containing letters from A-Z can be encoded into numbers using the following mapping:
+
+    // 'A' -> "1"
+    // 'B' -> "2"
+    // ...
+    // 'Z' -> "26"
+    // To decode an encoded message, all the digits must be grouped then mapped back into letters using the reverse of the mapping above (there may be multiple ways). For example, "11106" can be mapped into:
+
+    // "AAJF" with the grouping (1 1 10 6)
+    // "KJF" with the grouping (11 10 6)
+    // Note that the grouping (1 11 06) is invalid because "06" cannot be mapped into 'F' since "6" is different from "06".
+
+    // Given a string s containing only digits, return the number of ways to decode it.
+
+    // The test cases are generated so that the answer fits in a 32-bit integer.
+
+    // Example 1:
+
+    // Input: s = "12"
+    // Output: 2
+    // Explanation: "12" could be decoded as "AB" (1 2) or "L" (12).
+
+    public int numDecodings(String s) {
+        int[] dp = new int[s.length() + 1];
+        dp[0] = 1;
+        dp[1] = s.charAt(0) == '0' ? 0 : 1;
+        for(int i = 2; i <= s.length(); i++) {
+            int oneDigit = Integer.valueOf(s.substring(i - 1, i));
+            int twoDigits = Integer.valueOf(s.substring(i - 2, i));
+            if(oneDigit >= 1) {
+                dp[i] += dp[i - 1];
+            }
+            if(twoDigits >= 10 && twoDigits <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[s.length()];
+    }
+
+    // 62. Unique Paths
+
+    // There is a robot on an m x n grid. The robot is initially located at the top-left corner (i.e., grid[0][0]). The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]). The robot can only move either down or right at any point in time.
+    // Given the two integers m and n, return the number of possible unique paths that the robot can take to reach the bottom-right corner.
+
+    // Input: m = 3, n = 2
+    // Output: 3
+    // Explanation: From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:
+    // 1. Right -> Down -> Down
+    // 2. Down -> Down -> Right
+    // 3. Down -> Right -> Down
+
+    public int uniquePaths(int m, int n) {        
+        int[][] dp = new int[m][n];        
+        for(int i = 0; i < m; i++) {            
+            for(int j = 0; j < n; j++) {               
+                if(i == 0 || j == 0) {                    
+                    dp[i][j] = 1;                
+                } else {                    
+                    dp[i][j] = dp[i - 1][j] + dp[i][j -1];                
+                }            
+            }        
+        }        
+        return dp[m - 1][n - 1];   
+    }
+
+    // 55. Jump Game
+
+    // You are given an integer array nums. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.
+    // Return true if you can reach the last index, or false otherwise.
+
+    // Input: nums = [2,3,1,1,4]
+    // Output: true
+    // Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+
+
+    public boolean canJump1(int[] nums) {
+        int goal = nums.length - 1;
+        for(int i = goal; i >= 0; i--) {
+            if(i + nums[i] >= goal) {
+                goal = i;
+            }
+        }
+        return goal == 0;
+    }
+
+
+    public boolean canJump2(int[] nums) {
+       int reachable = 0;
+       for(int i = 0; i < nums.length; i ++) {
+           if(i > reachable) return false;
+           reachable = Math.max(reachable, i + nums[i]);
+       } 
+       return true;
+    }
+
     // 4. Graph
 
     // 133. Clone Graph
@@ -1193,6 +1430,80 @@ public class Blind75 {
         }
     }
 
+    // 547. Number of Provinces
+
+    // Similar problem as above but using Union Find approach
+
+    // There are n cities. Some of them are connected, while some are not. If city a is connected directly with city b, and city b is connected directly with city c, then city a is connected indirectly with city c.
+
+    // A province is a group of directly or indirectly connected cities and no other cities outside of the group.
+
+    // You are given an n x n matrix isConnected where isConnected[i][j] = 1 if the ith city and the jth city are directly connected, and isConnected[i][j] = 0 otherwise.
+
+    // Return the total number of provinces.
+
+
+    // Example 1:
+
+    // Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]
+    // Output: 2
+
+    // Example 2:
+
+    // Input: isConnected = [[1,0,0],[0,1,0],[0,0,1]]
+    // Output: 3
+
+    
+    class Solution {
+        public int findCircleNum(int[][] isConnected) {
+            int n = isConnected.length;
+            int numOfComponents = n;
+            int[] root = new int[n];
+            int[] rank = new int[n];
+
+            for(int i=0;i<n;i++){
+                root[i] = i;
+                rank[i] = 1;   // 1 height initially for all nodes
+            }
+
+            for(int i = 0; i < n; i++) {
+                for(int j = i + 1; j < n; j++) {
+                    int findX = find(i, root);
+                    int findY = find(j, root);
+                    if(isConnected[i][j] == 1 && findX != findY) {
+                        union(i, j, root, rank);
+                        numOfComponents--;
+                    }
+                }
+            }
+            return numOfComponents;
+        }
+
+        private int find(int x, int[] root) {
+            if(x == root[x])
+                return x;
+            root[x] = find(root[x], root);
+            return root[x];
+        }
+
+        private void union(int x, int y, int[] root, int[] rank) {
+            int rootX = find(x, root);
+            int rootY = find(y, root);
+
+            if(rootX != rootY) {
+                if(rank[rootX] > rank[rootY]) {
+                    root[rootY] = rootX;
+                } else if(rank[rootX] < rank[rootY]) {
+                    root[rootX] = rootY;
+                } else {
+                    root[rootX] = rootY;
+                    rank[rootY] += 1;
+                }
+            }
+        }
+
+    }
+
     // 5. Interval
 
     // 57. Insert Interval
@@ -1386,6 +1697,37 @@ public class Blind75 {
         return minHeap.size();
     }
 
+    // OR
+
+    public int minMeetingRooms(int[][] intervals) {
+        int[] start = new int[intervals.length];
+        int[] end = new int[intervals.length];
+
+        for (int i = 0; i < intervals.length; i++) {
+            start[i] = intervals[i][0];
+            end[i] = intervals[i][1];
+        }
+
+        int s = 0;
+        int e = 0;
+        int res = 0;
+        int count = 0;
+        while(s < intervals.length) {
+            if(start[s] < end[e]) {
+                s += 1;
+                count += 1;
+            } else {
+                e += 1;
+                count -=1;
+            }
+            count = Math.max(res, count);
+        }
+        return res;
+
+    }
+
+
+
     // 6. Linked List
 
     public class ListNode {
@@ -1496,6 +1838,52 @@ public class Blind75 {
         return first.next;
     }
 
+    // OR
+    public ListNode mergeKLists1(ListNode[] lists) {
+        //Approach: Using MergeSort Algorithm
+        return mergeSort1(lists, 0, lists.length-1);
+
+    }
+    //method for merge sort
+    private ListNode mergeSort1(ListNode[] lists, int left, int right){
+        //base case
+        if(left==right) return lists[left];
+
+        //case: if left<right
+        if(left<right){
+            //devide the list in to two pieces
+            int mid = (left+right)/2;
+
+            //left side: start to mid
+            ListNode ll = mergeSort1(lists, left, mid);
+
+            //right side: mid to end
+            ListNode lr = mergeSort1(lists, mid+1, right);
+
+            //merge them
+            return merge1(ll, lr);
+        }
+        else return null;
+
+    }
+    //method for merge
+    private ListNode merge1(1ListNode l1, ListNode l2){
+        //base case
+        if(l1==null) return l2;
+        if(l2==null) return l1;
+
+        //case 1: value of l1 is less than value of l2
+        if(l1.val<l2.val){
+            l1.next = merge1(l1.next, l2);
+            return l1;
+        }
+        //case 2: value of l2 is less than value of l1
+        else{
+            l2.next = merge1(l1, l2.next);
+            return l2;
+        }
+    }
+
     // 19. Remove Nth Node From End of List
 
     // Given the head of a linked list, remove the nth node from the end of the list
@@ -1519,6 +1907,26 @@ public class Blind75 {
 
         second.next = second.next.next;
         return dummy.next;
+    }
+
+    // OR
+
+    public ListNode removeNthFromEnd1(ListNode head, int n) {
+        ListNode result = new ListNode(-1);
+        result.next = head;
+        ListNode start = result;
+        ListNode end = result.next;
+        while(end != null && n > 0) {
+            end = end.next;
+            n--;
+        }
+
+        while(end != null) {
+            start = start.next;
+            end = end.next;
+        }
+        start.next = start.next.next;
+        return result.next;
     }
 
     // 143. Reorder List
@@ -1669,6 +2077,27 @@ public class Blind75 {
     // Output: [[7,4,1],[8,5,2],[9,6,3]]
 
     public void rotate(int[][] matrix) {
+        int l = 0;
+        int r = matrix.length - 1;
+
+        while(l < r) {
+            for (int i = l; i < r; i++) {
+                int top = l;
+                int bottom = r;
+                int temp = matrix[top][l + i];
+                matrix[top][l + i] = matrix[bottom - i][l];
+                matrix[bottom - i][l] = matrix[bottom][r - i];
+                matrix[bottom][r - i] = matrix[top + i][r];
+                matrix[top + i][r] = temp;
+            }
+            l++;
+            r--;
+        }
+    }
+
+    // OR
+
+    public void rotate1(int[][] matrix) {
         int n = matrix.length;
         for (int i = 0; i < (n + 1) / 2; i++) {
             for (int j = 0; j < n / 2; j++) {
@@ -1836,7 +2265,66 @@ public class Blind75 {
     // Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C'
     // from string t.
 
+
     public String minWindow(String s, String t) {
+        if(t.length() == 0 || t == null) {
+            return "";
+        }
+        if(s.equals(t)) {
+            return t;
+        }
+
+        Map<Character, Integer> countT = new HashMap<>();
+        Map<Character, Integer> window = new HashMap<>();
+        int have = 0;
+        int need = t.length();
+        int start = 0;
+        int end = 0;
+        int[] result = {-1, -1};
+        int resultLength = Integer.MAX_VALUE;
+
+        for(char ch: t.toCharArray()) {
+            countT.put(ch, countT.getOrDefault(ch, 0) + 1);
+        }
+
+        // start with a slinding window solution and check if the current window substring tallys with two HashMaps && have == need if yes, then shink the window until they don’t match and reduce have. Else increase the window size.
+        while(end < s.length()) {
+            char ch = s.charAt(end);
+            window.put(ch, window.getOrDefault(ch, 0) + 1);
+
+            // t chars are now in window, condition satisfied
+            if(countT.containsKey(ch) && window.get(ch) <= countT.get(ch)) {
+                have += 1;
+            }
+
+            while(have == need) {
+                // update the new min result;
+                int windowLength = end - start + 1;
+                if(windowLength < resultLength) {
+                    // result = Math.max(resultLength, end - start + 1)
+                    resultLength = windowLength;
+                    result[0] = start;
+                    result[1] = end;
+                }
+                // pop from left side of the window
+                window.put(s.charAt(start), window.get(s.charAt(start)) - 1);
+                if(countT.containsKey(s.charAt(start)) && window.get(s.charAt(start)) < countT.get(s.charAt(start))) {
+                    have -= 1;
+                }
+                start += 1; 
+            }
+            end += 1;
+        }
+
+        if(resultLength == Integer.MAX_VALUE) {
+            return "";
+        }
+        return s.substring(result[0], result[1] + 1); 
+    }
+
+    // OR
+
+    public String minWindow1(String s, String t) {
         if (s.length() == 0 || t.length() == 0)
             return "";
 
@@ -2032,7 +2520,45 @@ public class Blind75 {
     // Output: "bab"
     // Note: "aba" is also a valid answer.
 
+    // Other solutions are here: https://github.com/mission-peace/interview/blob/master/src/com/interview/string/LongestPalindromeSubstring.java
+    // Explaination here: https://www.youtube.com/watch?v=V-sEwsca1ak&pp=ygUUTWFuYWNoZXIncyBhbGdvcml0aG0%3D
+
     public String longestPalindrome(String s) {
+        String res = "";
+        int resLen = 0;
+        int l = 0;
+        int r = 0;
+        for(int i = 0; i < s.length(); i++) {
+            l = i;
+            r = i;
+            // Odd length
+            while(l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {
+                if((r - l + 1) > resLen){
+                    res = s.substring(l, r + 1);
+                    resLen = r - l + 1;
+                }
+                l -= 1;
+                r += 1;
+            }
+
+            // Even length
+            l = i;
+            r = i + 1;
+            while(l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r))  {
+                if((r - l + 1) > resLen){
+                    res = s.substring(l, r + 1);
+                    resLen = r - l + 1;
+                }
+                l -= 1;
+                r += 1;
+            }
+        }
+        return res;
+    }
+
+    // OR
+
+    public String longestPalindrome1(String s) {
         if (s == null || s.length() == 0)
             return s;
 
@@ -2074,7 +2600,33 @@ public class Blind75 {
     // Output: 6
     // Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
 
-    public int countSubstrings(String s) {
+    public int countSubstrings1(String s) {
+        int res = 0;
+        for(int i = 0; i < s.length(); i++) {
+            // Odd
+            int l = i;
+            int r = i;
+            while(l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {
+                res += 1;
+                l -= 1;
+                r += 1;
+            }
+
+            // Even
+            l = i;
+            r = i + 1;
+            while(l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {
+                res += 1;
+                l -= 1;
+                r += 1;
+            }
+        }
+        return res;
+    }
+
+    // OR
+
+    public int countSubstrings2(String s) {
         int n = s.length();
         int ans = 0;
 
@@ -2162,6 +2714,60 @@ public class Blind75 {
         return 1 + Math.max(leftHeight, rightHeight);
     }
 
+    public int maxDepthBFS(TreeNode root) {
+        if(root == null) {
+            return 0;
+        }
+        int level = 0;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(root);
+        while(!q.isEmpty()) {
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                TreeNode current = q.remove();
+                if(current.left != null) {
+                    q.add(current.left);
+                }
+                if(current.right != null) {
+                    q.add(current.right);
+                }
+            }
+            level += 1;
+        }
+        return level;
+    }
+
+    public int maxDepthDFS(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        Stack<TreeNode> stack = new Stack<>();
+        Stack<Integer> depthStack = new Stack<>();
+        stack.push(root);
+        depthStack.push(1);
+
+        int maxDepth = 0;
+
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            int depth = depthStack.pop();
+
+            maxDepth = Math.max(maxDepth, depth);
+
+            if (node.right != null) {
+                stack.push(node.right);
+                depthStack.push(depth + 1);
+            }
+            if (node.left != null) {
+                stack.push(node.left);
+                depthStack.push(depth + 1);
+            }
+        }
+
+        return maxDepth;
+    }
+
     // 100. Same Tree
 
     public boolean isSameTree(TreeNode p, TreeNode q) {
@@ -2177,6 +2783,21 @@ public class Blind75 {
     // 226. Invert Binary Tree
 
     public TreeNode invertTree(TreeNode root) {
+        if(root == null) {
+            return null;
+        }
+
+        TreeNode temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+        invertTree(root.left);
+        invertTree(root.right);
+        return root;
+    }
+
+    // OR
+
+    public TreeNode invertTree1(TreeNode root) {
         if (root == null)
             return null;
 
