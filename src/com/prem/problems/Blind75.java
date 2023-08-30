@@ -849,7 +849,7 @@ public class Blind75 {
                 }            
             }        
         }        
-        return dp[m - 1][n - 1];   
+        return dp[m - 1][n - 1];
     }
 
     // 55. Jump Game
@@ -876,7 +876,8 @@ public class Blind75 {
     public boolean canJump2(int[] nums) {
        int reachable = 0;
        for(int i = 0; i < nums.length; i ++) {
-           if(i > reachable) return false;
+           if(i > reachable) 
+                return false;
            reachable = Math.max(reachable, i + nums[i]);
        } 
        return true;
@@ -1883,6 +1884,48 @@ public class Blind75 {
             return l2;
         }
     }
+
+
+    // Find nth smallest elemnt of k sorted list. 
+    // Length of the longest list is M. 
+    // Receiving the following lists:
+    // 1: [1, 4, 5, 8, 9]
+    // 2: [3, 4, 4, 6]
+    // 3: [0, 2, 8]
+    
+    // and n=4
+
+
+    public static int findNthElement(List<List<Integer>> lists, int n) {
+        int k = n; // Number of times to move the pointer
+        int result = -1;
+
+        while (k > 0) {
+            int minIndex = -1;
+            int minValue = Integer.MAX_VALUE;
+
+            // Find the minimum value among the first elements of all lists
+            for (int i = 0; i < lists.size(); i++) {
+                List<Integer> list = lists.get(i);
+                if (!list.isEmpty() && list.get(0) < minValue) {
+                    minValue = list.get(0);
+                    minIndex = i;
+                }
+            }
+
+            // Move the pointer in the list with the minimum value
+            if (minIndex != -1) {
+                List<Integer> minList = lists.get(minIndex);
+                minList.remove(0); // Move to the next element in the list
+                result = minValue; // Update the result
+            }
+
+            k--;
+        }
+
+        return result;
+    }
+
 
     // 19. Remove Nth Node From End of List
 

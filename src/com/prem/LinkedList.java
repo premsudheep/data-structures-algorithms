@@ -258,9 +258,10 @@ public class LinkedList {
   public Node intersection(Node a, Node b) {
     // return the node that is intersecting
     // a->b
-    // \
-    // d->e->null //return d node
-    // b->c /
+    //      \
+    //        d->e->null //return d node
+    //      /
+    // b->c 
 
     Node pointerA = a;
     Node pointerB = b;

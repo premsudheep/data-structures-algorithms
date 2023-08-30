@@ -327,7 +327,9 @@ public class LeetCode {
     }
 
     public int paintHouse(int[][] costs) {
-        // [[17,2,17],[16,16,5],[14,3,19]] -> output 10.
+        // [[17,2,17],
+        //  [16,16,5],
+        //  [14,3,19]] -> output 10.
         // paint house 0 into blue
         // paint house 1 into green
         // paint house 2 into blue
@@ -410,7 +412,7 @@ public class LeetCode {
     }
 
     public int findTheCelebrity(int n) {
-        // celeb -> all the n-1 ppl in the part know him/her but he/she don't know any
+        // celeb -> all the n-1 ppl in the party know him/her but he/she don't know any
         // one of them
         int person = 0;
         for (int i = 1; i < n; i++) {
